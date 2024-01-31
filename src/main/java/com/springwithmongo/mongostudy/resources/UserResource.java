@@ -1,16 +1,17 @@
 package com.springwithmongo.mongostudy.resources;
 
 import com.springwithmongo.mongostudy.domain.User;
+import com.springwithmongo.mongostudy.dto.UserDTO;
 import com.springwithmongo.mongostudy.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "users/")
@@ -19,9 +20,15 @@ public class UserResource {
     @Autowired
     private UserService userService;
     @GetMapping
-    public ResponseEntity<List<User>> findAll(){
+    public ResponseEntity<List<UserDTO>> findAll(){
         List<User> users = userService.findAll();
-        return ResponseEntity.ok().body(users);
+        List<UserDTO> userDTOList = users.stream().map(x -> new UserDTO(x)).collect(Collectors.toList());
+        return ResponseEntity.ok().body(userDTOList);
+    }
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<UserDTO> findById(@PathVariable String id){
+        User user = userService.findById(id);
+        return ResponseEntity.ok().body(new UserDTO(user));
     }
 
 }
