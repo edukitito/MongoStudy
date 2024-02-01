@@ -1,5 +1,6 @@
 package com.springwithmongo.mongostudy.resources;
 
+import com.springwithmongo.mongostudy.domain.Post;
 import com.springwithmongo.mongostudy.domain.User;
 import com.springwithmongo.mongostudy.dto.UserDTO;
 import com.springwithmongo.mongostudy.services.UserService;
@@ -49,5 +50,11 @@ public class UserResource {
         obj.setId(id);
         userService.update(obj);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "/{id}/posts")
+    public ResponseEntity<List<Post>> findPosts(@PathVariable String id){
+        User user = userService.findById(id);
+        return ResponseEntity.ok().body(user.getPosts());
     }
 }
